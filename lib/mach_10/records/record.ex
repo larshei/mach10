@@ -4,8 +4,8 @@ defmodule Mach10.Records.Record do
 
   schema "records" do
     field :time_ms, :integer
-    field :track_id, :id
-    field :user_id, :id
+    belongs_to(:user, Mach10.Users.User)
+    belongs_to(:track, Mach10.Tracks.Track)
 
     timestamps(type: :utc_datetime, autogenerate: {Mach10.Helpers, :utc_now_no_usec, []})
   end
@@ -13,7 +13,7 @@ defmodule Mach10.Records.Record do
   @doc false
   def changeset(record, attrs) do
     record
-    |> cast(attrs, [:time_ms])
-    |> validate_required([:time_ms])
+    |> cast(attrs, [:time_ms, :track_id, :user_id])
+    |> validate_required([:time_ms, :track_id, :user_id])
   end
 end

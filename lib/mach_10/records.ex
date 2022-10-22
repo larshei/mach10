@@ -7,6 +7,8 @@ defmodule Mach10.Records do
   alias Mach10.Repo
 
   alias Mach10.Records.Record
+  alias Mach10.Tracks.Track
+  alias Mach10.Users.User
 
   @doc """
   Returns the list of records.
@@ -100,5 +102,36 @@ defmodule Mach10.Records do
   """
   def change_record(%Record{} = record, attrs \\ %{}) do
     Record.changeset(record, attrs)
+  end
+
+  def by_user(user_id) do
+    records = from r in Record,
+      where: [user_id: ^user_id],
+      join: t in assoc(r, :track),
+      order_by: [asc: :time_ms],
+      preload: [track: t]
+
+    Repo.all(records)
+  end
+
+  def by_track(track_id) do
+    records = from r in Record,
+      where: [track_id: ^track_id],
+      join: u in assoc(r, :user),
+      order_by: [asc: :time_ms],
+      preload: [user: u]
+
+    Repo.all(records)
+  end
+
+  def top_100_for_track(track_id) do
+    records = from r in Record,
+    where: [track_id: ^track_id],
+    join: u in assoc(r, :user),
+    order_by: [asc: :time_ms],
+    limit: 100,
+    preload: [user: u]
+
+  Repo.all(records)
   end
 end

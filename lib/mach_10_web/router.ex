@@ -17,11 +17,19 @@ defmodule Mach10Web.Router do
   scope "/", Mach10Web do
     pipe_through :browser
 
-    get "/", PageController, :index
-    live "/live", PageLive, :index
-    live "/live/modal/:size", PageLive, :modal
-    live "/live/slide_over/:origin", PageLive, :slide_over
-    live "/live/pagination/:page", PageLive, :pagination
+    live "/", IndexLive
+    live "/users", UsersLive
+    live "/user/:id", UserLive
+    live "/tracks", TracksLive
+    live "/track/:id", TrackLive
+
+    scope "/petal" do
+      get "/", PageController, :index
+      live "/live", PageLive, :index
+      live "/live/modal/:size", PageLive, :modal
+      live "/live/slide_over/:origin", PageLive, :slide_over
+      live "/live/pagination/:page", PageLive, :pagination
+    end
   end
 
   scope "/api/v1", Mach10Web do

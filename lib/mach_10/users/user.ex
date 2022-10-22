@@ -7,6 +7,7 @@ defmodule Mach10.Users.User do
     field :image_url, :string
     field :last_seen_at, :utc_datetime
     field :name, :string
+    has_many(:records, Mach10.Records.Record)
 
     timestamps(type: :utc_datetime, autogenerate: {Mach10.Helpers, :utc_now_no_usec, []})
   end

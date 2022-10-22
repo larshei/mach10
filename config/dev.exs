@@ -58,7 +58,7 @@ config :mach_10, Mach10Web.Endpoint,
     patterns: [
       ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
-      ~r"lib/mach_10_web/(live|views)/.*(ex)$",
+      ~r"lib/mach_10_web/(live|views|components)/.*(ex)$",
       ~r"lib/mach_10_web/templates/.*(eex)$"
     ]
   ]

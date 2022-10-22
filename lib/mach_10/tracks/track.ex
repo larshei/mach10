@@ -6,6 +6,7 @@ defmodule Mach10.Tracks.Track do
     field :deleted_at, :utc_datetime
     field :image_url, :string
     field :name, :string
+    has_many(:records, Mach10.Records.Record)
 
     timestamps(type: :utc_datetime, autogenerate: {Mach10.Helpers, :utc_now_no_usec, []})
   end
