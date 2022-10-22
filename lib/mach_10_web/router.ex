@@ -24,10 +24,13 @@ defmodule Mach10Web.Router do
     live "/live/pagination/:page", PageLive, :pagination
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", Mach10Web do
-  #   pipe_through :api
-  # end
+  scope "/api/v1", Mach10Web do
+    pipe_through :api
+
+    resources "/tracks", TrackController, except: [:new, :edit]
+    resources "/users", UserController, except: [:new, :edit]
+    resources "/records", RecordController, except: [:new, :edit]
+  end
 
   # Enables LiveDashboard only for development
   #

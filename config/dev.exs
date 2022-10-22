@@ -2,8 +2,8 @@ import Config
 
 # Configure your database
 config :mach_10, Mach10.Repo,
-  username: "postgres",
-  password: "postgres",
+  username: "user",
+  password: "pass",
   database: "mach_10_dev",
   hostname: "localhost",
   show_sensitive_data_on_connection_error: true,
