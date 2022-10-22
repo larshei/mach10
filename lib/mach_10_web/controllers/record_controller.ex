@@ -20,29 +20,21 @@ defmodule Mach10Web.RecordController do
     end
   end
 
-  def create(conn, params) do
-    IO.inspect params
-
-    conn
-    |> put_status(:bad_request)
-    |> json(%{message: "error"})
-  end
-
-  def show(conn, %{"id" => id}) do
-    record = Records.get_record!(id)
+  def show(conn, %{"track_id" => track_id, "user_id" => user_id}) do
+    record = Records.get_record!(track_id, user_id)
     render(conn, "show.json", record: record)
   end
 
-  def update(conn, %{"id" => id, "record" => record_params}) do
-    record = Records.get_record!(id)
+  def update(conn, %{"track_id" => track_id, "user_id" => user_id, "record" => record_params}) do
+    record = Records.get_record!(track_id, user_id)
 
     with {:ok, %Record{} = record} <- Records.update_record(record, record_params) do
       render(conn, "show.json", record: record)
     end
   end
 
-  def delete(conn, %{"id" => id}) do
-    record = Records.get_record!(id)
+  def delete(conn, %{"track_id" => track_id, "user_id" => user_id}) do
+    record = Records.get_record!(track_id, user_id)
 
     with {:ok, %Record{}} <- Records.delete_record(record) do
       send_resp(conn, :no_content, "")

@@ -37,7 +37,10 @@ defmodule Mach10.Records do
       ** (Ecto.NoResultsError)
 
   """
-  def get_record!(id), do: Repo.get!(Record, id)
+  def get_record!(track_id, user_id) do
+    Repo.get_by(Record, [track_id: track_id, user_id: user_id])
+    |> Repo.preload([:user, :track])
+  end
 
   @doc """
   Creates a record.
@@ -52,9 +55,18 @@ defmodule Mach10.Records do
 
   """
   def create_record(attrs \\ %{}) do
-    %Record{}
+    {ok, record} = result = %Record{}
     |> Record.changeset(attrs)
-    |> Repo.insert()
+    |> Repo.insert(on_conflict: :replace_all, conflict_target: [:track_id, :user_id])
+
+    if ok == :ok do
+
+      record = record |> IO.inspect |> Repo.preload([:user, :track])
+      Phoenix.PubSub.broadcast(Mach10.PubSub, "record:track:#{record.track_id}", {:record, :inserted, record})
+      Phoenix.PubSub.broadcast(Mach10.PubSub, "record:user:#{record.user_id}", {:record, :inserted, record})
+    end
+
+    result
   end
 
   @doc """
@@ -70,9 +82,17 @@ defmodule Mach10.Records do
 
   """
   def update_record(%Record{} = record, attrs) do
-    record
+    {ok, record} = result = record
     |> Record.changeset(attrs)
     |> Repo.update()
+
+    if ok == :ok do
+      record = record |> Repo.preload([:user, :track])
+      Phoenix.PubSub.broadcast(Mach10.PubSub, "record:track:#{record.track_id}", {:record, :updated, record})
+      Phoenix.PubSub.broadcast(Mach10.PubSub, "record:user:#{record.user_id}", {:record, :updated, record})
+    end
+
+    result
   end
 
   @doc """
@@ -88,7 +108,14 @@ defmodule Mach10.Records do
 
   """
   def delete_record(%Record{} = record) do
-    Repo.delete(record)
+    {ok, record} = result = Repo.delete(record)
+
+    if ok == :ok do
+      Phoenix.PubSub.broadcast(Mach10.PubSub, "record:track:#{record.track_id}", {:record, :deleted, record})
+      Phoenix.PubSub.broadcast(Mach10.PubSub, "record:user:#{record.user_id}", {:record, :deleted, record})
+    end
+
+    result
   end
 
   @doc """

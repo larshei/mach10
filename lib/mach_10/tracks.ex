@@ -50,9 +50,15 @@ defmodule Mach10.Tracks do
 
   """
   def create_track(attrs \\ %{}) do
-    %Track{}
+    {ok, track} = result = %Track{}
     |> Track.changeset(attrs)
     |> Repo.insert()
+
+    if ok == :ok do
+      Phoenix.PubSub.broadcast(Mach10.PubSub, "tracks", {:track, :inserted, track})
+    end
+
+    result
   end
 
   @doc """
@@ -68,9 +74,15 @@ defmodule Mach10.Tracks do
 
   """
   def update_track(%Track{} = track, attrs) do
-    track
+    {ok, track} = result = track
     |> Track.changeset(attrs)
     |> Repo.update()
+
+    if ok == :ok do
+      Phoenix.PubSub.broadcast(Mach10.PubSub, "tracks", {:track, :updated, track})
+    end
+
+    result
   end
 
   @doc """
@@ -86,7 +98,13 @@ defmodule Mach10.Tracks do
 
   """
   def delete_track(%Track{} = track) do
-    Repo.delete(track)
+    {ok, track} = result = Repo.delete(track)
+
+    if ok == :ok do
+      Phoenix.PubSub.broadcast(Mach10.PubSub, "tracks", {:track, :deleted, track})
+    end
+
+    result
   end
 
   @doc """

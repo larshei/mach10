@@ -50,9 +50,15 @@ defmodule Mach10.Users do
 
   """
   def create_user(attrs \\ %{}) do
-    %User{}
+    {ok, user} = result = %User{}
     |> User.changeset(attrs)
     |> Repo.insert()
+
+    if ok == :ok do
+      Phoenix.PubSub.broadcast(Mach10.PubSub, "users", {:user, :inserted, user})
+    end
+
+    result
   end
 
   @doc """
@@ -68,9 +74,15 @@ defmodule Mach10.Users do
 
   """
   def update_user(%User{} = user, attrs) do
-    user
+    {ok, user} = result = user
     |> User.changeset(attrs)
     |> Repo.update()
+
+    if ok == :ok do
+      Phoenix.PubSub.broadcast(Mach10.PubSub, "users", {:user, :updated, user})
+    end
+
+    result
   end
 
   @doc """
@@ -83,10 +95,15 @@ defmodule Mach10.Users do
 
       iex> delete_user(user)
       {:error, %Ecto.Changeset{}}
-
   """
   def delete_user(%User{} = user) do
-    Repo.delete(user)
+    {ok, user} = result = Repo.delete(user)
+
+    if ok == :ok do
+      Phoenix.PubSub.broadcast(Mach10.PubSub, "users", {:user, :deleted, user})
+    end
+
+    result
   end
 
   @doc """

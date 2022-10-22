@@ -37,7 +37,13 @@ defmodule Mach10Web.Router do
 
     resources "/tracks", TrackController, except: [:new, :edit]
     resources "/users", UserController, except: [:new, :edit]
-    resources "/records", RecordController, except: [:new, :edit]
+
+    get "/records", RecordController, :index
+    get "/records/:track_id/:user_id", RecordController, :show
+    post "/records", RecordController, :create
+    patch "/records/:track_id/:user_id", RecordController, :update
+    put "/records/:track_id/:user_id", RecordController, :update
+    delete "/records/:track_id/:user_id", RecordController, :delete
   end
 
   # Enables LiveDashboard only for development
