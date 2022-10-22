@@ -1,9 +1,9 @@
-defmodule PetalBoilerplate.MixProject do
+defmodule Mach10.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :petal_boilerplate,
+      app: :mach_10,
       version: "0.1.0",
       elixir: "~> 1.13",
       elixirc_paths: elixirc_paths(Mix.env()),
@@ -19,7 +19,7 @@ defmodule PetalBoilerplate.MixProject do
   # Type `mix help compile.app` for more information.
   def application do
     [
-      mod: {PetalBoilerplate.Application, []},
+      mod: {Mach10.Application, []},
       extra_applications: [:logger, :runtime_tools]
     ]
   end
