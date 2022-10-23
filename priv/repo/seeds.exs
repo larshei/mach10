@@ -29,7 +29,7 @@ tracks |> Enum.each& (Mach10.Repo.insert!(%Mach10.Tracks.Track{name: &1}))
 
   Mach10.Repo.insert!(
     %Mach10.Records.Record{user_id: user_id, track_id: track_id, time_ms: time},
-    on_conflict: :replace_all,
+    on_conflict: {:replace, {:updated_at, :time_ms}},
     conflict_target: [:track_id, :user_id]
   )
 end)

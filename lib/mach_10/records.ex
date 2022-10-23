@@ -37,9 +37,12 @@ defmodule Mach10.Records do
       ** (Ecto.NoResultsError)
 
   """
-  def get_record!(track_id, user_id) do
+  def get_record(track_id, user_id) do
     Repo.get_by(Record, [track_id: track_id, user_id: user_id])
-    |> Repo.preload([:user, :track])
+    |> case do
+      nil -> nil
+      record -> Repo.preload(record, [:user, :track])
+    end
   end
 
   @doc """
@@ -57,11 +60,10 @@ defmodule Mach10.Records do
   def create_record(attrs \\ %{}) do
     {ok, record} = result = %Record{}
     |> Record.changeset(attrs)
-    |> Repo.insert(on_conflict: :replace_all, conflict_target: [:track_id, :user_id])
+    |> Repo.insert(on_conflict: {:replace, [:updated_at, :time_ms]}, conflict_target: [:track_id, :user_id], returning: true)
 
     if ok == :ok do
-
-      record = record |> IO.inspect |> Repo.preload([:user, :track])
+      record = record |> Repo.preload([:user, :track])
       Phoenix.PubSub.broadcast(Mach10.PubSub, "record:track:#{record.track_id}", {:record, :inserted, record})
       Phoenix.PubSub.broadcast(Mach10.PubSub, "record:user:#{record.user_id}", {:record, :inserted, record})
     end
