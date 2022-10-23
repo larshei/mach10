@@ -40,6 +40,15 @@ defmodule Mach10.Tracks do
   def get_track_by_reference(reference), do: Repo.get_by(Track, reference: reference)
   def get_track_by_reference!(reference), do: Repo.get_by!(Track, reference: reference)
 
+  def search(term) do
+    ilike_term = "%#{term}%"
+
+    query = from t in Track,
+      where: ilike(t.reference, ^ilike_term) or ilike(t.name, ^ilike_term)
+
+    Repo.all(query)
+  end
+
   @doc """
   Creates a track.
 

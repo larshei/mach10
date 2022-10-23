@@ -40,6 +40,15 @@ defmodule Mach10.Users do
   def get_user_by_reference(reference), do: Repo.get_by(User, reference: reference)
   def get_user_by_reference!(reference), do: Repo.get_by!(User, reference: reference)
 
+  def search(term) do
+    ilike_term = "%#{term}%"
+
+    query = from u in User,
+      where: ilike(u.reference, ^ilike_term) or ilike(u.name, ^ilike_term)
+
+    Repo.all(query)
+  end
+
   @doc """
   Creates a user.
 

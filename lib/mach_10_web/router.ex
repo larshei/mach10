@@ -18,6 +18,7 @@ defmodule Mach10Web.Router do
     pipe_through :browser
 
     live "/", IndexLive
+    live "/search", SearchResultsLive
     live "/users", UsersLive
     live "/user/:id", UserLive
     live "/tracks", TracksLive

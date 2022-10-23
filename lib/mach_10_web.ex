@@ -98,6 +98,15 @@ defmodule Mach10Web do
       }
 
       use PetalComponents
+
+      def handle_event("search", %{"search" => term}, socket) do
+        {:noreply, socket
+        |> Phoenix.LiveView.redirect(to: Mach10Web.Router.Helpers.live_path(
+          socket,
+          Mach10Web.SearchResultsLive,
+          search: term
+      ))}
+      end
     end
   end
 
