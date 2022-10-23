@@ -36,7 +36,9 @@ defmodule Mach10Web.Router do
     pipe_through :api
 
     resources "/tracks", TrackController, except: [:new, :edit]
+    get "/tracks/reference/:reference/", TrackController, :show
     resources "/users", UserController, except: [:new, :edit]
+    get "/users/reference/:reference/", UserController, :show
 
     get "/records", RecordController, :index
     get "/records/:track_id/:user_id", RecordController, :show

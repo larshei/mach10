@@ -18,6 +18,7 @@ defmodule Mach10Web.UserView do
       inserted_at: user.inserted_at,
       last_seen_at: user.last_seen_at,
       name: user.name,
+      reference: user.reference,
       updated_at: user.updated_at,
     }
   end

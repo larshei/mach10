@@ -16,8 +16,8 @@ user_count = Enum.count(users)
 tracks = [ "austria", "canada", "china", "england", "germany", "greece", "italy", "japan", "malaysia", "mexico", "netherlands", "poland", "portugal", "russia", "spain", "thailand", "turkey", "united states" ]
 track_count = Enum.count(tracks)
 
-users |> Enum.each& (Mach10.Repo.insert!(%Mach10.Users.User{name: &1}))
-tracks |> Enum.each& (Mach10.Repo.insert!(%Mach10.Tracks.Track{name: &1}))
+users |> Enum.each& (Mach10.Repo.insert!(%Mach10.Users.User{name: &1, reference: "ref:#{&1}"}))
+tracks |> Enum.each& (Mach10.Repo.insert!(%Mach10.Tracks.Track{name: &1, reference: "ref:#{&1}"}))
 
 1..150
 |> Enum.to_list()
@@ -29,7 +29,7 @@ tracks |> Enum.each& (Mach10.Repo.insert!(%Mach10.Tracks.Track{name: &1}))
 
   Mach10.Repo.insert!(
     %Mach10.Records.Record{user_id: user_id, track_id: track_id, time_ms: time},
-    on_conflict: {:replace, {:updated_at, :time_ms}},
+    on_conflict: {:replace, [:updated_at, :time_ms]},
     conflict_target: [:track_id, :user_id]
   )
 end)

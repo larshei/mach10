@@ -35,7 +35,10 @@ defmodule Mach10.Users do
       ** (Ecto.NoResultsError)
 
   """
+  def get_user(id), do: Repo.get(User, id)
   def get_user!(id), do: Repo.get!(User, id)
+  def get_user_by_reference(reference), do: Repo.get_by(User, reference: reference)
+  def get_user_by_reference!(reference), do: Repo.get_by!(User, reference: reference)
 
   @doc """
   Creates a user.

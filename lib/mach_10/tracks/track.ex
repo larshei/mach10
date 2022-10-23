@@ -6,6 +6,7 @@ defmodule Mach10.Tracks.Track do
     field :deleted_at, :utc_datetime
     field :image_url, :string
     field :name, :string
+    field :reference, :string
     has_many(:records, Mach10.Records.Record)
 
     timestamps(type: :utc_datetime, autogenerate: {Mach10.Helpers, :utc_now_no_usec, []})
@@ -14,7 +15,7 @@ defmodule Mach10.Tracks.Track do
   @doc false
   def changeset(track, attrs) do
     track
-    |> cast(attrs, [:name, :image_url, :deleted_at])
-    |> validate_required([:name])
+    |> cast(attrs, [:reference, :name, :image_url, :deleted_at])
+    |> validate_required([:reference, :name])
   end
 end

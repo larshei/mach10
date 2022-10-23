@@ -21,7 +21,12 @@ defmodule Mach10Web.TrackController do
   end
 
   def show(conn, %{"id" => id}) do
-    track = Tracks.get_track!(id)
+    track = Tracks.get_track(id)
+    render(conn, "show.json", track: track)
+  end
+
+  def show(conn, %{"reference" => reference}) do
+    track = Tracks.get_track_by_reference(reference)
     render(conn, "show.json", track: track)
   end
 

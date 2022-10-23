@@ -21,15 +21,18 @@ defmodule Mach10Web.UserController do
   end
 
   def create(conn, params) do
-    IO.inspect params
-
     conn
     |> put_status(:bad_request)
     |> json(%{message: "error"})
   end
 
+  def show(conn, %{"reference" => reference}) do
+    user = Users.get_user_by_reference(reference)
+    render(conn, "show.json", user: user)
+  end
+
   def show(conn, %{"id" => id}) do
-    user = Users.get_user!(id)
+    user = Users.get_user(id)
     render(conn, "show.json", user: user)
   end
 

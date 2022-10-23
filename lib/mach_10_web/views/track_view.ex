@@ -17,6 +17,7 @@ defmodule Mach10Web.TrackView do
       image_url: track.image_url,
       inserted_at: track.inserted_at,
       name: track.name,
+      reference: track.reference,
       updated_at: track.updated_at,
     }
   end

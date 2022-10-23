@@ -35,7 +35,10 @@ defmodule Mach10.Tracks do
       ** (Ecto.NoResultsError)
 
   """
+  def get_track(id), do: Repo.get(Track, id)
   def get_track!(id), do: Repo.get!(Track, id)
+  def get_track_by_reference(reference), do: Repo.get_by(Track, reference: reference)
+  def get_track_by_reference!(reference), do: Repo.get_by!(Track, reference: reference)
 
   @doc """
   Creates a track.
