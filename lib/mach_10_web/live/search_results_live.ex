@@ -1,5 +1,5 @@
 defmodule Mach10Web.SearchResultsLive do
-  use Mach10Web, :live_view
+  use Mach10Web, :live_view_search
 
   alias Mach10.Tracks
   alias Mach10.Users
@@ -54,5 +54,13 @@ defmodule Mach10Web.SearchResultsLive do
   def handle_info({:search, term}, socket) do
     {:noreply,
      socket |> assign(results: %{tracks: Tracks.search(term), users: Users.search(term)})}
+  end
+
+  @impl true
+  @spec handle_event(<<_::48>>, map, any) :: {:noreply, any}
+  def handle_event("search", %{"search" => term}, socket) do
+    {:noreply,
+     socket
+     |> assign(results: %{tracks: Tracks.search(term), users: Users.search(term)}, term: term)}
   end
 end

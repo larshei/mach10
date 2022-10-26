@@ -137,10 +137,35 @@ defmodule Mach10.Records do
     records = from r in Record,
       where: [user_id: ^user_id],
       join: t in assoc(r, :track),
-      order_by: [asc: :time_ms],
       preload: [track: t]
 
     Repo.all(records)
+  end
+
+  def by_user_with_position(user_id) when is_bitstring(user_id), do: by_user_with_position(String.to_integer(user_id))
+  def by_user_with_position(user_id) do
+    query_positions = """
+    SELECT records.track_id, COUNT(records.user_id) AS place
+    FROM (
+      SELECT *
+      FROM records
+      WHERE user_id = $1
+      ) AS users_records
+    JOIN records ON records.track_id = users_records.track_id WHERE users_records.time_ms >= records.time_ms
+    GROUP BY records.track_id
+    """
+
+    result_positions = Ecto.Adapters.SQL.query!(Mach10.Repo, query_positions, [user_id])
+
+    positions = result_positions.rows
+    |> Enum.map(fn [track_id, position] -> {track_id, position} end)
+    |> Enum.into(%{})
+
+    by_user(user_id)
+    |> Enum.map(fn record ->
+      Map.put(record, :position, positions[record.track_id])
+    end)
+    |> Enum.sort_by(& &1.position)
   end
 
   def by_track(track_id) do
@@ -161,6 +186,6 @@ defmodule Mach10.Records do
     limit: 100,
     preload: [user: u]
 
-  Repo.all(records)
+    Repo.all(records)
   end
 end

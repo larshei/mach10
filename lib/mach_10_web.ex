@@ -48,6 +48,16 @@ defmodule Mach10Web do
         layout: {Mach10Web.LayoutView, "live.html"}
 
       unquote(view_helpers())
+      unquote(search_callback())
+    end
+  end
+
+  def live_view_search do
+    quote do
+      use Phoenix.LiveView,
+        layout: {Mach10Web.LayoutView, "live.html"}
+
+      unquote(view_helpers())
     end
   end
 
@@ -98,14 +108,22 @@ defmodule Mach10Web do
       }
 
       use PetalComponents
+    end
+  end
 
+  defp search_callback do
+    quote do
       def handle_event("search", %{"search" => term}, socket) do
-        {:noreply, socket
-        |> Phoenix.LiveView.redirect(to: Mach10Web.Router.Helpers.live_path(
-          socket,
-          Mach10Web.SearchResultsLive,
-          search: term
-      ))}
+        {:noreply,
+         socket
+         |> Phoenix.LiveView.redirect(
+           to:
+             Mach10Web.Router.Helpers.live_path(
+               socket,
+               Mach10Web.SearchResultsLive,
+               search: term
+             )
+         )}
       end
     end
   end

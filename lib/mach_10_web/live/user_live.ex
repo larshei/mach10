@@ -7,7 +7,7 @@ defmodule Mach10Web.UserLive do
   @impl true
   def mount(%{"id" => id}, _session, socket) do
     user = Users.get_user!(id)
-    records = Records.by_user(id)
+    records = Records.by_user_with_position(id)
 
     Phoenix.PubSub.subscribe(Mach10.PubSub, "record:user:#{id}")
 
@@ -26,19 +26,13 @@ defmodule Mach10Web.UserLive do
           <tbody>
             <%= for record <- @records do %>
               <.tr>
+                <.td><span class="inline-flex items-center rounded-full bg-blue-100 px-3 py-0.5 text-sm font-medium text-blue-800"><%= record.position %></span></.td>
+                <.td><%= record.track.name %></.td>
+                <.td><%= Timex.Duration.from_milliseconds(record.time_ms) |> Timex.Format.Duration.Formatters.Humanized.format() %></.td>
+                <.td><%= record.inserted_at |> Mach10.Cldr.DateTime.to_string!() %></.td>
                 <.td>
                   <a href={"/track/#{record.track_id}"} class="block">
-                    <%= record.track.name %>
-                  </a>
-                </.td>
-                <.td>
-                  <a href={"/track/#{record.track_id}"} class="block">
-                    <%= Timex.Duration.from_milliseconds(record.time_ms) |> Timex.Format.Duration.Formatters.Humanized.format() %>
-                  </a>
-                </.td>
-                <.td>
-                  <a href={"/track/#{record.track_id}"} class="block">
-                    <%= record.inserted_at |> Mach10.Cldr.DateTime.to_string!() %>
+                    <button type="button" class="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-3 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Go to track</button>
                   </a>
                 </.td>
               </.tr>

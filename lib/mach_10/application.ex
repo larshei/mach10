@@ -15,7 +15,10 @@ defmodule Mach10.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: Mach10.PubSub},
       # Start the Endpoint (http/https)
-      Mach10Web.Endpoint
+      Mach10Web.Endpoint,
+
+      # contains a short term history for who has taken the stop spots from whom to be displayed on the front page
+      Mach10.Records.History,
       # Start a worker by calling: Mach10.Worker.start_link(arg)
       # {Mach10.Worker, arg}
     ]
