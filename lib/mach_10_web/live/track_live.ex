@@ -7,7 +7,7 @@ defmodule Mach10Web.TrackLive do
   @impl true
   def mount(%{"id" => id}, _session, socket) do
     track = Tracks.get_track!(id)
-    records = Records.by_track(id)
+    records = Records.by_track(id) |> Enum.with_index()
 
     Phoenix.PubSub.subscribe(Mach10.PubSub, "record:track:#{id}")
 
@@ -24,23 +24,13 @@ defmodule Mach10Web.TrackLive do
         <.h2 label={"Track: #{@track.name}"} />
         <.table>
           <tbody>
-            <%= for record <- @records do %>
+            <%= for {record, position} <- @records do %>
               <.tr>
-                <.td>
-                  <a href={"/user/#{record.user_id}"} class="block">
-                    <%= record.user.name %>
-                  </a>
-                </.td>
-                <.td>
-                  <a href={"/user/#{record.user_id}"} class="block">
-                    <%= Timex.Duration.from_milliseconds(record.time_ms) |> Timex.Format.Duration.Formatters.Humanized.format() %>
-                  </a>
-                </.td>
-                <.td>
-                  <a href={"/track/#{record.track_id}"} class="block">
-                    <%= record.inserted_at |> Mach10.Cldr.DateTime.to_string!() %>
-                  </a>
-                </.td>
+              <.td><span class="inline-flex items-center rounded-full bg-blue-100 px-3 py-0.5 text-sm font-medium text-blue-800"><%= 1 + position %></span></.td>
+                <.td><%= record.user.name %></.td>
+                <.td><%= Timex.Duration.from_milliseconds(record.time_ms) |> Timex.Format.Duration.Formatters.Humanized.format() %></.td>
+                <.td><%= record.inserted_at |> Mach10.Cldr.DateTime.to_string!() %></.td>
+                <.td><a href={"/user/#{record.user_id}"} class="block"><button type="button" class="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-3 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Go to user</button></a></.td>
               </.tr>
             <% end %>
           </tbody>
